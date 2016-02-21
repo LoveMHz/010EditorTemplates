@@ -1,0 +1,58 @@
+//--------------------------------------
+//--- 010 Editor v6.0.3 Binary Template
+//
+// File: SteamQuery Server Packet
+// Author: Dustin Holden <dustin@devholden.com>
+// Revision: 1.0.0
+//
+// Note: This was written against packets from Killing Floor 2
+//--------------------------------------
+typedef enum <char> {
+    PACKET_PLAYERS = 'D',
+    PACKET_DETAILS = 'I',
+    PACKET_RULES   = 'E'
+} RESPONSE;
+
+typedef struct {
+    char id;
+    string name;
+    int32 score;
+    DOSTIME time; // Not tested
+} PLAYER;
+
+typedef struct {
+    string name;
+    string value;
+} RULE;
+
+int32 packet_id;
+RESPONSE response;
+
+if(response == PACKET_PLAYERS) {
+    uchar players;
+    PLAYER player[players] <optimize=false>;
+
+}
+
+if(response == PACKET_DETAILS) {
+    char protocol;
+    string hostname;
+    string map;
+    string game_dir;
+    string game_descr;
+    int16 steamappid;
+    char num_players;
+    char max_players;
+    char unknown_1;
+    char unknown_2;
+    char os;
+    char password;
+    char unknown_3;
+    char version[4];
+    char unknown_4[12];
+}
+
+if(response == PACKET_RULES) {
+    int16 rules;
+    RULE rule[rules] <optimize=false>;
+}
