@@ -1,0 +1,29 @@
+//------------------------------------------------
+//--- 010 Editor Binary Template
+//
+//      File: dar.bt
+//   Authors: LoveMHz <Dustin Holden>
+//   Version: 0.1
+//   Purpose: Template for Metal Gear Solid PC DAR archive file.
+//  Category: Archive
+// File Mask: *.dar
+//  ID Bytes:
+//   History:
+//   0.1      Initial release.
+//
+//------------------------------------------------
+
+uint32 entry_count;
+
+struct ENTRY {
+    string name;
+
+    // HACK: File is 4byte aligned.
+    if((FTell() % 4) != 0)
+        FSeek(FTell() - (FTell() % 4) + 4);
+
+    uint32 size;
+    
+    // File Data
+    char data[size + 1];
+} entry[entry_count] <optimize=false>;
