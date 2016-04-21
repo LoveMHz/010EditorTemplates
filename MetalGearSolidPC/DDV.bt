@@ -1,0 +1,45 @@
+//------------------------------------------------
+//--- 010 Editor v7.0 Binary Template
+//
+//      File: DDV.bt
+//   Authors: LoveMHz <Dustin Holden>
+//   Version: 0.1
+//   Purpose: Template for Metal Gear Solid PC DDV video file.
+//  Category: Media
+// File Mask: *.ddv
+//  ID Bytes: 
+//   History: 
+//   0.1      Initial release.
+//
+// Based on research done by paulsapps.
+// https://github.com/paulsapps/MasherReversing/blob/master/MasherReversing/masher.cpp
+//------------------------------------------------
+
+struct DDVHEADER {
+    uint32 ddvTag;
+    uint32 ddvVersion;
+
+    enum <uint32> CONTAINS { VIDEO=1, AUDIO, AUDIO_VIDEO } contains;
+    uint32 frameRate;
+    uint32 numberOfFrames;
+} DDVHeader;
+
+struct VIDEOHEADER {
+    uint32 unknown <hidden=true>;  // Probably a reserved field, it has no effect and isn't read by masher lib
+    uint32 width;
+    uint32 height;
+
+    uint32 maxVideoFrameSize; // must add 8 to this for some reason
+    uint32 field9; // size of a buffer that contains shorts, i.e read field9 * 2
+    uint32 keyFrameRate;
+
+} VideoHeader;
+
+struct AUDIOHEADER {
+    uint32 audioFormat;
+    uint32 sampleRate;
+    uint32 maxAudioFrameSize;
+    uint32 mSingleAudioFrameSize; // sampleRate / fps, i.e 44100/15=2940
+
+    uint32 framesInterleave;
+} AudioHeader;
