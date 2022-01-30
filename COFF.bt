@@ -1,0 +1,92 @@
+//------------------------------------------------
+//--- 010 Editor v12.0.1 Binary Template
+//
+//      File: COFF.bt
+//   Authors: Dustin Holden <dustin@devholden.com>
+//   Version: 1.0.0
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+DisasmSetMode(DISASM_X86_32);
+
+struct {
+	unsigned short f_magic  <comment="Magic number">;
+	unsigned short f_nscns  <comment="Number of Sections">;
+	time_t         f_timdat <comment="Time & date stamp ">;
+	long           f_symptr <comment="File pointer to Symbol Table">;
+	long           f_nsyms  <comment="Number of Symbols">;
+	unsigned short f_opthdr <comment="sizeof(Optional Header)">;
+	unsigned short f_flags  <comment="Flags">;
+} file_header;
+
+typedef struct relocation_entries_t {
+	long           r_vaddr  <comment="Reference Address">;
+	long           r_symndx <comment="Symbol index">;
+	unsigned short r_type   <comment="Type of relocation">;
+};
+
+typedef struct section_t {
+	char           s_name[8] <comment="Section Name">;
+	long           s_paddr   <comment="Physical Address">;
+	long           s_vaddr   <comment="Virtual Address">;
+	long           s_size    <comment="Section Size in Bytes">;
+	long           s_scnptr  <comment="File offset to the Section data">;
+	long           s_relptr  <comment="File offset to the Relocation table for this Section">;
+	long           s_lnnoptr <comment="File offset to the Line Number table for this Section">;
+	unsigned short s_nreloc  <comment="Number of Relocation table entries">;
+	unsigned short s_nlnno   <comment="Number of Line Number table entries">;
+	long           s_flags   <comment="Flags for this section">;
+
+    local int64 current_pos = FTell();
+
+    if(s_scnptr > 0) {
+        FSeek(s_scnptr);
+        Opcode s_data[s_size];
+    }
+
+    if(s_relptr > 0) {
+        FSeek(s_relptr);
+        relocation_entries_t s_relocs[s_nreloc];
+    }
+
+
+    FSeek(current_pos);
+};
+
+typedef struct symbol_aux_record_unknown_t {
+    char unknown[18];
+};
+
+typedef struct symbol_table_t {
+	union n_name {
+		char name[8];
+        struct name_offset {
+	        unsigned long zeroes;
+	        unsigned long offset;
+        } name_offset_t;
+	} name <comment="Symbol Name">;
+	long		   n_value   <comment="Value of Symbol">;
+	short		   n_scnum   <comment="Section Number">;
+	unsigned short n_type    <comment="Symbol Type">;
+	char		   n_sclass  <comment="Storage Class">;
+	char		   n_numaux  <comment="Auxiliary Count">;
+
+    if(name.name_offset_t.zeroes == 0) {
+        local int64 current_pos  = FTell();
+        local int64 string_table = file_header.f_symptr + (file_header.f_nsyms * 18);
+
+        FSeek(string_table + name.name_offset_t.offset);
+        string real_name;
+        FSeek(current_pos);
+    }
+
+    // TODO: Handle aux records
+};
+
+section_t sections[file_header.f_nscns]  <optimize=false>;
+
+FSeek(file_header.f_symptr);
+symbol_table_t symbols[file_header.f_nsyms] <optimize=false>;
