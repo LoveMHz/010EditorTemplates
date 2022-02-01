@@ -12,6 +12,36 @@
 //------------------------------------------------
 DisasmSetMode(DISASM_X86_32);
 
+enum <uchar> StorageClass { 
+    END_OF_FUNCTION = -1,
+    NULL = 0,
+    AUTOMATIC = 1,
+    EXTERNAL = 2,
+    STATIC = 3,
+    REGISTER = 4,
+    EXTERNAL_DEF = 5,
+    LABEL = 6,
+    UNDEFINED_LABEL = 7,
+    MEMBER_OF_STRUCT = 8,
+    ARGUMENT = 9,
+    STRUCT_TAG = 10,
+    MEMBER_OF_UNION = 11,
+    UNION_TAG = 12,
+    TYPE_DEFINITION = 13,
+    UNDEFINED_STATIC = 14,
+    ENUM_TAG = 15,
+    MEMBER_OF_ENUM = 16,
+    REGISTER_PARAM = 17,
+    BIT_FIELD = 18,
+    BLOCK = 100,
+    FUNCTION = 101,
+    END_OF_STRUCT = 102,
+    FILE = 103,
+    SECTION = 104,
+    WEAK_EXTERNAL = 105,
+    CLR_TOKEN = 107
+};
+
 struct {
 	unsigned short f_magic  <comment="Magic number">;
 	unsigned short f_nscns  <comment="Number of Sections">;
@@ -71,7 +101,7 @@ typedef struct symbol_table_t {
 	long		   n_value   <comment="Value of Symbol">;
 	short		   n_scnum   <comment="Section Number">;
 	unsigned short n_type    <comment="Symbol Type">;
-	char		   n_sclass  <comment="Storage Class">;
+	StorageClass   n_sclass  <comment="Storage Class">;
 	char		   n_numaux  <comment="Auxiliary Count">;
 
     if(name.name_offset_t.zeroes == 0) {
