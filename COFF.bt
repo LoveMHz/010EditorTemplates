@@ -89,4 +89,19 @@ typedef struct symbol_table_t {
 section_t sections[file_header.f_nscns]  <optimize=false>;
 
 FSeek(file_header.f_symptr);
-symbol_table_t symbols[file_header.f_nsyms] <optimize=false>;
+
+struct {
+    local uint32 symbol_count = 0;
+    local uint32 aux_count    = 0;
+
+    while(symbol_count < file_header.f_nsyms) {
+        if(aux_count == 0) {
+            symbol_table_t symbol <optimize=false>;
+            aux_count = symbol.n_numaux;
+        } else {
+            symbol_aux_record_unknown_t symbol <optimize=false>;
+            aux_count -= 1;
+        }
+        symbol_count +=1;
+    }
+} symbols;
