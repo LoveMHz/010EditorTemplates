@@ -42,6 +42,11 @@ enum <uchar> StorageClass {
     CLR_TOKEN = 107
 };
 
+enum <unsigned short> RelocationType { 
+    ADDR32 = 6, // 32-bit absolute address
+    REL32  = 20 // 32-bit PC-relative address
+};
+
 struct {
 	unsigned short f_magic  <comment="Magic number">;
 	unsigned short f_nscns  <comment="Number of Sections">;
@@ -55,7 +60,7 @@ struct {
 typedef struct relocation_entries_t {
 	long           r_vaddr  <comment="Reference Address">;
 	long           r_symndx <comment="Symbol index">;
-	unsigned short r_type   <comment="Type of relocation">;
+	RelocationType r_type   <comment="Type of relocation">;
 };
 
 typedef struct section_t {
